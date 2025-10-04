@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>移动应用安全 - CyberSec Academy</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/course.css" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="logo"><i class="fas fa-shield-alt"></i><span>CyberSec Academy</span></div>
+      <div class="nav-right">
+        <a class="btn btn-secondary" href="../index.html">返回首页</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="page-wrap">
+    <div class="breadcrumb"><span>课程</span> / <strong>移动应用安全</strong></div>
+    <h1 class="page-title">移动应用安全</h1>
+    <p class="page-subtitle">iOS / Android 常见风险、调试与防护</p>
+
+    <div class="course-layout">
+      <aside class="toc tilt">
+        <h4>课程目录</h4>
+        <a href="#m1">1. 常见风险</a>
+        <a href="#m2">2. 调试与抓包</a>
+        <a href="#m3">3. 存储与通信加固</a>
+        <a href="#m4">4. 测验</a>
+      </aside>
+      <article class="article">
+        <section id="m1" class="section-card reveal tilt">
+          <h3>1. 常见风险</h3>
+          <p>逆向/二次打包、弱加密、调试接口泄露、明文存储、WebView 注入、证书校验绕过等。</p>
+        </section>
+        <section id="m2" class="section-card reveal tilt">
+          <h3>2. 调试与抓包</h3>
+          <p>Frida/Objection、Charles/Proxyman 抓包，注意仅在授权与自有环境进行。</p>
+        </section>
+        <section id="m3" class="section-card reveal tilt">
+          <h3>3. 存储与通信加固</h3>
+          <ul style="color:var(--text-secondary);margin-left:1rem">
+            <li>安全存储(Keychain/Keystore)，最小可见</li>
+            <li>TLS pinning 与中间人防护</li>
+            <li>检测调试与Hook（结合多信号）</li>
+          </ul>
+        </section>
+        <section id="m4" class="section-card reveal quiz-card" data-quiz data-answer="b">
+          <h3>4. 测验</h3>
+          <div class="quiz-question">移动端防止中间人攻击的关键措施包括？</div>
+          <div class="quiz-options">
+            <div class="quiz-option" data-value="a"><i class="far fa-circle"></i> 仅使用HTTP</div>
+            <div class="quiz-option" data-value="b"><i class="far fa-circle"></i> TLS + 证书绑定(pinning)</div>
+            <div class="quiz-option" data-value="c"><i class="far fa-circle"></i> 在代码里打印密钥方便调试</div>
+          </div>
+        </section>
+      </article>
+    </div>
+  </main>
+  <script src="../js/main.js"></script>
+  <script src="../js/pages.js"></script>
+</body>
+</html>

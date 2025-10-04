@@ -1,0 +1,18 @@
+{
+  "nav.home": "Home",
+  "nav.courses": "Courses",
+  "nav.labs": "Labs",
+  "nav.tools": "Tools",
+  "nav.resources": "Resources",
+  "hero.title": "Welcome to CyberSec Academy",
+  "hero.subtitle": "Master ethical hacking through interactive lessons and hands-on labs",
+  "hero.cta.learn": "Start Learning",
+  "hero.cta.labs": "Hands-on Labs",
+  "section.courses": "Learning Paths",
+  "section.labs": "Practice Labs",
+  "section.tools": "Recommended Tools",
+  "section.progress": "Learning Progress",
+  "footer.brand": "Dedicated to ethical hacking and cybersecurity education",
+  "footer.note": "All content is for educational purposes only. Do not use for illegal activities.",
+  "footer.contact": "Email: learn@cybersecacademy.com"
+}

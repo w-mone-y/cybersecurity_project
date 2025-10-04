@@ -1,0 +1,18 @@
+{
+  "nav.home": "首页",
+  "nav.courses": "课程",
+  "nav.labs": "实验室",
+  "nav.tools": "工具",
+  "nav.resources": "资源",
+  "hero.title": "欢迎来到网络安全学院",
+  "hero.subtitle": "通过互动学习和实践练习掌握道德黑客技术",
+  "hero.cta.learn": "开始学习",
+  "hero.cta.labs": "实践练习",
+  "section.courses": "学习路径",
+  "section.labs": "实践实验室",
+  "section.tools": "推荐工具",
+  "section.progress": "学习进度",
+  "footer.brand": "专注于道德黑客和网络安全教育",
+  "footer.note": "本平台所有内容仅用于教育目的，请勿用于非法活动",
+  "footer.contact": "Email: learn@cybersecacademy.com"
+}

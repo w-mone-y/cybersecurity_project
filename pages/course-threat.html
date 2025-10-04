@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>威胁建模实践 - CyberSec Academy</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/course.css" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="logo"><i class="fas fa-shield-alt"></i><span>CyberSec Academy</span></div>
+      <div class="nav-right">
+        <a class="btn btn-secondary" href="../index.html">返回首页</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="page-wrap">
+    <div class="breadcrumb"><span>课程</span> / <strong>威胁建模实践</strong></div>
+    <h1 class="page-title">威胁建模实践</h1>
+    <p class="page-subtitle">用 STRIDE / ATT&CK 驱动的系统级风险识别与缓解</p>
+
+    <div class="course-layout">
+      <aside class="toc tilt">
+        <h4>课程目录</h4>
+        <a href="#t1">1. 目标与边界</a>
+        <a href="#t2">2. STRIDE 清单驱动</a>
+        <a href="#t3">3. 结合 MITRE ATT&CK</a>
+        <a href="#t4">4. 测验</a>
+      </aside>
+      <article class="article">
+        <section id="t1" class="section-card reveal tilt">
+          <h3>1. 目标与边界</h3>
+          <p>识别系统边界、资产与数据流；列出信任边界与接口；形成 DFD（数据流图）。</p>
+        </section>
+        <section id="t2" class="section-card reveal tilt">
+          <h3>2. STRIDE 清单驱动</h3>
+          <p>针对每个数据流/存储/进程，检查伪装、篡改、否认、信息披露、拒绝服务、权限提升。</p>
+        </section>
+        <section id="t3" class="section-card reveal tilt">
+          <h3>3. 结合 MITRE ATT&CK</h3>
+          <p>将潜在威胁映射到 ATT&CK 技术，便于防护与检测措施落地，形成优先级。</p>
+        </section>
+        <section id="t4" class="section-card reveal quiz-card" data-quiz data-answer="a">
+          <h3>4. 测验</h3>
+          <div class="quiz-question">STRIDE 中“信息披露(Information Disclosure)”的合适缓解是？</div>
+          <div class="quiz-options">
+            <div class="quiz-option" data-value="a"><i class="far fa-circle"></i> 传输/存储加密与严格访问控制</div>
+            <div class="quiz-option" data-value="b"><i class="far fa-circle"></i> 增大带宽</div>
+            <div class="quiz-option" data-value="c"><i class="far fa-circle"></i> 禁止日志</div>
+          </div>
+        </section>
+      </article>
+    </div>
+  </main>
+  <script src="../js/main.js"></script>
+  <script src="../js/pages.js"></script>
+</body>
+</html>

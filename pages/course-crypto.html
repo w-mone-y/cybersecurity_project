@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>密码学与加密 - CyberSec Academy</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/course.css" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="logo"><i class="fas fa-shield-alt"></i><span>CyberSec Academy</span></div>
+      <div class="nav-right">
+        <a class="btn btn-secondary" href="../index.html">返回首页</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="page-wrap">
+    <div class="breadcrumb"><span>课程</span> / <strong>密码学与加密</strong></div>
+    <h1 class="page-title">密码学与加密</h1>
+    <p class="page-subtitle">理解对称/非对称、哈希、签名与密钥管理最佳实践</p>
+
+    <div class="course-layout">
+      <aside class="toc tilt">
+        <h4>课程目录</h4>
+        <a href="#c1">1. 加密基础</a>
+        <a href="#c2">2. 哈希与签名</a>
+        <a href="#c3">3. 密钥管理</a>
+        <a href="#c4">4. 动手：加密挑战</a>
+      </aside>
+      <article class="article">
+        <section id="c1" class="section-card reveal tilt">
+          <h3>1. 加密基础</h3>
+          <p>对称加密（AES、ChaCha20）用于高效加密数据；非对称加密（RSA、ECC）用于密钥交换与数字签名。</p>
+        </section>
+        <section id="c2" class="section-card reveal tilt">
+          <h3>2. 哈希与签名</h3>
+          <p>哈希函数（SHA-256、BLAKE3）用于完整性校验；数字签名（ECDSA、Ed25519）用于认证与不可否认。</p>
+        </section>
+        <section id="c3" class="section-card reveal tilt">
+          <h3>3. 密钥管理</h3>
+          <ul style="color:var(--text-secondary);margin-left:1rem">
+            <li>密钥分级、最小可见、HSM/云KMS</li>
+            <li>密钥轮换、吊销、双人审批（4眼原则）</li>
+            <li>端到端加密与会话密钥派生</li>
+          </ul>
+        </section>
+        <section id="c4" class="section-card reveal quiz-card" data-quiz data-answer="a">
+          <h3>4. 动手：加密挑战</h3>
+          <div class="quiz-question">下列哪项更适合用于完整性校验？</div>
+          <div class="quiz-options">
+            <div class="quiz-option" data-value="a"><i class="far fa-circle"></i> SHA-256 哈希</div>
+            <div class="quiz-option" data-value="b"><i class="far fa-circle"></i> AES-CBC</div>
+            <div class="quiz-option" data-value="c"><i class="far fa-circle"></i> RSA 解密</div>
+          </div>
+          <div class="quiz-actions">
+            <a class="btn btn-primary" href="../exercises/crypto-challenge.html">去实践：加密解密挑战</a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </main>
+  <script src="../js/main.js"></script>
+  <script src="../js/pages.js"></script>
+</body>
+</html>

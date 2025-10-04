@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Web 安全 - CyberSec Academy</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/course.css" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="logo"><i class="fas fa-shield-alt"></i><span>CyberSec Academy</span></div>
+      <div class="nav-right">
+        <a class="btn btn-secondary" href="../index.html">返回首页</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="page-wrap">
+    <div class="breadcrumb"><span>课程</span> / <strong>Web 安全</strong></div>
+    <h1 class="page-title">Web 安全</h1>
+    <p class="page-subtitle">掌握 OWASP Top 10 与现代 Web 的防护策略</p>
+
+    <div class="course-layout">
+      <aside class="toc tilt">
+        <h4>课程目录</h4>
+        <a href="#w1">1. OWASP Top 10 概览</a>
+        <a href="#w2">2. XSS 原理与防护</a>
+        <a href="#w3">3. CSRF 与 SameSite</a>
+        <a href="#w4">4. 安全头部与 CSP</a>
+        <a href="#w5">5. 测验</a>
+      </aside>
+      <article class="article">
+        <section id="w1" class="section-card reveal tilt">
+          <h3>1. OWASP Top 10 概览</h3>
+          <p>聚焦于最关键的 Web 应用安全风险：访问控制失效、加密失败、注入、设计缺陷、认证失败、敏感数据暴露、软件和数据完整性失败、日志与监控不足等。</p>
+        </section>
+        <section id="w2" class="section-card reveal tilt">
+          <h3>2. XSS 原理与防护</h3>
+          <p>核心在于<strong>输出编码</strong>与<strong>上下文敏感</strong>：HTML、属性、URL、JS 不同上下文需不同编码策略；同时配合 CSP 限制内联脚本与域。</p>
+          <div class="accordion">
+            <div class="accordion-item">
+              <button class="accordion-btn">反射型/存储型/DOM 型 XSS <i class="fas fa-chevron-down"></i></button>
+              <div class="accordion-panel"><p>三类路径不同，但本质都是未受控输入进入可执行上下文。</p></div>
+            </div>
+            <div class="accordion-item">
+              <button class="accordion-btn">防护清单 <i class="fas fa-chevron-down"></i></button>
+              <div class="accordion-panel"><ul style="margin-left:1rem;color:var(--text-secondary)"><li>模板引擎自动转义</li><li>严格 CSP（script-src、object-src）</li><li>避免危险的 innerHTML，使用 textContent 或安全模板</li><li>对 URL、属性、JS 上下文分别编码</li></ul></div>
+            </div>
+          </div>
+        </section>
+        <section id="w3" class="section-card reveal tilt">
+          <h3>3. CSRF 与 SameSite</h3>
+          <p>CSRF 防护：SameSite=Lax/Strict、双提交 Cookie、CSRF Token、Referer/Origin 校验、对“有副作用”的请求使用 POST + Token。</p>
+        </section>
+        <section id="w4" class="section-card reveal tilt">
+          <h3>4. 安全头部与 CSP</h3>
+          <ul style="color:var(--text-secondary);margin-left:1rem">
+            <li>Content-Security-Policy</li>
+            <li>Strict-Transport-Security</li>
+            <li>X-Frame-Options / frame-ancestors</li>
+            <li>Referrer-Policy</li>
+            <li>Permissions-Policy</li>
+          </ul>
+        </section>
+        <section id="w5" class="section-card reveal quiz-card" data-quiz data-answer="c">
+          <h3>5. 测验</h3>
+          <div class="quiz-question">防止 XSS 最有效的基础策略是？</div>
+          <div class="quiz-options">
+            <div class="quiz-option" data-value="a"><i class="far fa-circle"></i> 使用 WAF 即可</div>
+            <div class="quiz-option" data-value="b"><i class="far fa-circle"></i> 仅过滤<script>字符串</div>
+            <div class="quiz-option" data-value="c"><i class="far fa-circle"></i> 上下文敏感的输出编码 + 严格 CSP</div>
+          </div>
+          <div class="quiz-actions">
+            <a class="btn btn-primary" href="../exercises/sql-injection.html">去实践：SQL 注入演示</a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </main>
+  <script src="../js/main.js"></script>
+  <script src="../js/pages.js"></script>
+</body>
+</html>

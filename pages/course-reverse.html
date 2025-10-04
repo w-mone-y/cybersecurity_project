@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>逆向工程 - CyberSec Academy</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/course.css" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="logo"><i class="fas fa-shield-alt"></i><span>CyberSec Academy</span></div>
+      <div class="nav-right">
+        <a class="btn btn-secondary" href="../index.html">返回首页</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="page-wrap">
+    <div class="breadcrumb"><span>课程</span> / <strong>逆向工程</strong></div>
+    <h1 class="page-title">逆向工程</h1>
+    <p class="page-subtitle">理解二进制结构、静态/动态分析与合规要求</p>
+
+    <div class="course-layout">
+      <aside class="toc tilt">
+        <h4>课程目录</h4>
+        <a href="#r1">1. 环境与法律边界</a>
+        <a href="#r2">2. 静态分析：反汇编/反编译</a>
+        <a href="#r3">3. 动态分析与沙箱</a>
+        <a href="#r4">4. 报告与披露</a>
+      </aside>
+      <article class="article">
+        <section id="r1" class="section-card reveal tilt">
+          <h3>1. 环境与法律边界</h3>
+          <p>仅在授权样本与隔离环境，遵循负责任披露。严格区分恶意分析与合法研究，避免传播样本。</p>
+        </section>
+        <section id="r2" class="section-card reveal tilt">
+          <h3>2. 静态分析：反汇编/反编译</h3>
+          <p>理解指令流与控制流图（CFG）、字符串与导入表，识别混淆与加壳的常见迹象。</p>
+        </section>
+        <section id="r3" class="section-card reveal tilt">
+          <h3>3. 动态分析与沙箱</h3>
+          <p>在沙箱/虚拟机中观测 API 调用、网络连接、注册表/文件行为，记录 IOC（Indicators of Compromise）。</p>
+        </section>
+        <section id="r4" class="section-card reveal tilt">
+          <h3>4. 报告与披露</h3>
+          <p>输出结构化报告：样本哈希、环境、行为、IOC、处置建议；遵循披露窗口与红线。</p>
+        </section>
+      </article>
+    </div>
+  </main>
+  <script src="../js/main.js"></script>
+  <script src="../js/pages.js"></script>
+</body>
+</html>

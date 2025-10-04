@@ -1,0 +1,166 @@
+/* 课程页面专用样式：玻璃拟态 + 霓虹动效 + 丝滑交互 */
+:root {
+  --glass-bg: rgba(255,255,255,0.04);
+  --glass-border: rgba(255,255,255,0.12);
+  --neon: #00ff41;
+  --neon-2: #00b3ff;
+  --glow: 0 0 20px rgba(0,255,65,0.25), 0 0 40px rgba(0,179,255,0.15);
+}
+
+.page-wrap {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 120px 24px 64px;
+}
+
+.breadcrumb {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-bottom: 16px;
+}
+
+.page-title {
+  font-size: 2.4rem;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+  background: linear-gradient(135deg, var(--neon), var(--neon-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 12px;
+}
+
+.page-subtitle { color: var(--text-secondary); margin-bottom: 28px; }
+
+.course-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 24px;
+}
+
+.toc {
+  position: sticky;
+  top: 96px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
+  padding: 16px;
+  backdrop-filter: blur(10px);
+}
+
+.toc h4 { color: var(--primary-color); margin-bottom: 8px; }
+.toc a {
+  display: block;
+  color: var(--text-secondary);
+  text-decoration: none;
+  padding: 8px 10px;
+  border-radius: 8px;
+  transition: all .2s ease;
+}
+.toc a.active, .toc a:hover {
+  color: var(--text-primary);
+  background: rgba(0,255,65,0.08);
+}
+
+.article {
+  display: grid;
+  gap: 18px;
+}
+
+.section-card {
+  position: relative;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 18px 20px;
+  overflow: hidden;
+}
+
+.section-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  padding: 1px; /* neon border thickness */
+  background: linear-gradient(135deg, rgba(0,255,65,0.25), rgba(0,179,255,0.2));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  pointer-events: none;
+}
+
+.section-card h3 { color: var(--text-primary); margin-bottom: 8px; }
+.section-card p { color: var(--text-secondary); }
+
+.kbd {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid var(--glass-border);
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-size: 0.85em;
+}
+
+/* 手风琴 */
+.accordion {
+  border-top: 1px solid var(--glass-border);
+}
+.accordion-item { border-bottom: 1px solid var(--glass-border); }
+.accordion-btn {
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: 0;
+  color: var(--text-primary);
+  padding: 14px 4px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.accordion-panel {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height .35s ease;
+  color: var(--text-secondary);
+}
+.accordion-item.active .accordion-panel {
+  max-height: 400px;
+}
+
+/* 测验 */
+.quiz-card { margin-top: 6px; }
+.quiz-question { color: var(--text-primary); font-weight: 600; margin-bottom: 8px; }
+.quiz-options { display: grid; gap: 10px; }
+.quiz-option {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px; border-radius: 10px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--glass-border);
+  cursor: pointer; transition: transform .15s ease, background .2s;
+}
+.quiz-option:hover { transform: translateY(-1px); background: rgba(0,255,65,0.06); }
+.quiz-option.correct { outline: 2px solid #00ff41; box-shadow: 0 0 0 4px rgba(0,255,65,0.15); }
+.quiz-option.wrong { outline: 2px solid #ff4757; box-shadow: 0 0 0 4px rgba(255,71,87,0.15); }
+.quiz-actions { margin-top: 8px; display: flex; gap: 8px; }
+
+/* 丝滑出现动画 */
+.reveal { opacity: 0; transform: translateY(18px) scale(.98); transition: all .5s cubic-bezier(.2,.6,.2,1); }
+.reveal.visible { opacity: 1; transform: translateY(0) scale(1); }
+
+/* 卡片倾斜效果容器（仅视觉） */
+.tilt { transform-style: preserve-3d; will-change: transform; }
+.tilt:hover { box-shadow: var(--glow); }
+
+/* 涟漪点击效果 */
+.ripple { position: relative; overflow: hidden; }
+.ripple::after {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background: radial-gradient(circle at var(--ripple-x,50%) var(--ripple-y,50%), rgba(255,255,255,.25), transparent 40%);
+  transform: scale(0); opacity: 0; transition: transform .5s, opacity .8s;
+}
+.ripple.is-animating::after { transform: scale(4); opacity: 1; }
+
+@media (max-width: 980px){ .course-layout{ grid-template-columns: 1fr; } .toc{ position: relative; top: 0; } }

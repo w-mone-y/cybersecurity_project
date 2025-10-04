@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>网络扫描模拟器 - CyberSec Academy</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/lab-style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* 网络图样式 */
+        #network-canvas {
+            background: radial-gradient(circle at center, rgba(0, 255, 65, 0.05) 0%, rgba(0, 0, 0, 0.5) 50%);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            cursor: crosshair;
+        }
+
+        .target-list {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            background: var(--darker-bg);
+        }
+
+        .target-item {
+            padding: 0.5rem 1rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 0.9rem;
+        }
+
+        .target-item:last-child {
+            border-bottom: none;
+        }
+
+        .target-ip {
+            color: var(--primary-color);
+        }
+
+        .target-status {
+            padding: 0.2rem 0.5rem;
+            border-radius: 3px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .status-online {
+            background: rgba(0, 255, 65, 0.2);
+            color: var(--primary-color);
+        }
+
+        .status-offline {
+            background: rgba(255, 71, 87, 0.2);
+            color: #ff4757;
+        }
+
+        .status-unknown {
+            background: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+        }
+
+        /* 端口扫描结果 */
+        .port-results {
+            max-height: 300px;
+            overflow-y: auto;
+            background: var(--darker-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            padding: 1rem;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 0.9rem;
+        }
+
+        .port-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.3rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .port-item:last-child {
+            border-bottom: none;
+        }
+
+        .port-number {
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        .port-service {
+            color: var(--text-secondary);
+        }
+
+        .port-state-open {
+            color: var(--primary-color);
+        }
+
+        .port-state-closed {
+            color: #ff4757;
+        }
+
+        .port-state-filtered {
+            color: #ffc107;
+        }
+
+        /* 扫描动画 */
+        .scanning-animation {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .scanning-pulse {
+            width: 60px;
+            height: 60px;
+            border: 3px solid var(--primary-color);
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+            position: relative;
+            animation: pulse-scan 2s infinite;
+        }
+
+        @keyframes pulse-scan {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.2);
+                opacity: 0.7;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .scanning-pulse::before {
+            content: '';
+            position: absolute;
+            top: -3px;
+            left: -3px;
+            right: -3px;
+            bottom: -3px;
+            border: 3px solid rgba(0, 255, 65, 0.3);
+            border-radius: 50%;
+            animation: pulse-scan-outer 2s infinite 0.5s;
+        }
+
+        @keyframes pulse-scan-outer {
+            0% {
+                transform: scale(1);
+                opacity: 0.7;
+            }
+            50% {
+                transform: scale(1.3);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 0.7;
+            }
+        }
+
+        /* 网络拓扑 */
+        .network-node {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--dark-bg);
+            font-size: 0.8rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
+        }
+
+        .network-node:hover {
+            transform: scale(1.2);
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.8);
+        }
+
+        .network-node.scanning {
+            animation: scan-highlight 1s infinite alternate;
+        }
+
+        @keyframes scan-highlight {
+            0% { background: var(--primary-color); }
+            100% { background: #ff6b35; }
+        }
+
+        .network-connection {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary-color), transparent);
+            opacity: 0.6;
+            animation: connection-pulse 3s infinite;
+        }
+
+        @keyframes connection-pulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.8; }
+        }
+    </style>
+</head>
+<body class="lab-body">
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-shield-alt"></i>
+                <span>CyberSec Academy</span>
+            </div>
+            <div class="nav-right">
+                <button class="btn btn-secondary" onclick="goHome()">返回首页</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 实验室界面 -->
+    <div class="lab-container">
+        <div class="lab-header">
+            <h1><i class="fas fa-network-wired"></i> 网络扫描模拟器</h1>
+            <p>学习网络发现和端口扫描技术</p>
+        </div>
+
+        <div class="lab-content">
+            <!-- 左侧控制面板 -->
+            <div class="control-panel">
+                <div class="panel-section">
+                    <h3><i class="fas fa-cog"></i> 扫描设置</h3>
+                    
+                    <div class="setting-group">
+                        <label>目标网段:</label>
+                        <select id="target-network">
+                            <option value="192.168.1.0/24">192.168.1.0/24 (家庭网络)</option>
+                            <option value="10.0.0.0/24">10.0.0.0/24 (办公网络)</option>
+                            <option value="172.16.1.0/24">172.16.1.0/24 (企业网络)</option>
+                            <option value="custom">自定义网段</option>
+                        </select>
+                    </div>
+
+                    <div class="setting-group" id="custom-network" style="display: none;">
+                        <label>自定义网段:</label>
+                        <input type="text" id="custom-network-input" placeholder="192.168.1.0/24">
+                    </div>
+                    
+                    <div class="setting-group">
+                        <label>扫描类型:</label>
+                        <select id="scan-type">
+                            <option value="ping">Ping扫描 (主机发现)</option>
+                            <option value="tcp">TCP连接扫描</option>
+                            <option value="syn">SYN隐蔽扫描</option>
+                            <option value="udp">UDP扫描</option>
+                            <option value="comprehensive">综合扫描</option>
+                        </select>
+                    </div>
+
+                    <div class="setting-group">
+                        <label>端口范围:</label>
+                        <select id="port-range">
+                            <option value="common">常用端口 (1-1024)</option>
+                            <option value="all">所有端口 (1-65535)</option>
+                            <option value="web">Web服务 (80,443,8080,8443)</option>
+                            <option value="custom">自定义端口</option>
+                        </select>
+                    </div>
+
+                    <div class="setting-group" id="custom-ports" style="display: none;">
+                        <label>端口列表:</label>
+                        <input type="text" id="custom-ports-input" placeholder="22,80,443,3389">
+                    </div>
+
+                    <div class="setting-group">
+                        <label>扫描速度:</label>
+                        <input type="range" id="scan-speed" min="1" max="5" value="3">
+                        <span id="speed-display">普通</span>
+                    </div>
+
+                    <button class="btn btn-primary" id="start-scan">开始扫描</button>
+                    <button class="btn btn-secondary" id="stop-scan" disabled>停止扫描</button>
+                    <button class="btn btn-outline" id="clear-results">清除结果</button>
+                </div>
+
+                <div class="panel-section">
+                    <h3><i class="fas fa-chart-bar"></i> 扫描统计</h3>
+                    <div class="stat-item">
+                        <span>已扫描主机:</span>
+                        <span id="scanned-hosts">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>活跃主机:</span>
+                        <span id="active-hosts">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>开放端口:</span>
+                        <span id="open-ports">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>扫描进度:</span>
+                        <span id="scan-progress">0%</span>
+                    </div>
+                </div>
+
+                <div class="panel-section">
+                    <h3><i class="fas fa-info-circle"></i> Nmap命令</h3>
+                    <div style="background: var(--darker-bg); padding: 1rem; border-radius: 5px; border: 1px solid var(--border-color);">
+                        <code id="nmap-command" style="color: var(--primary-color); font-family: 'Monaco', 'Consolas', monospace; font-size: 0.9rem; word-break: break-all;">
+                            nmap -sn 192.168.1.0/24
+                        </code>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右侧显示区域 -->
+            <div class="display-panel">
+                <!-- 网络拓扑图 -->
+                <div class="target-info">
+                    <h3><i class="fas fa-project-diagram"></i> 网络拓扑</h3>
+                    <div style="position: relative; height: 300px;">
+                        <canvas id="network-canvas" width="600" height="300"></canvas>
+                        <div id="network-nodes"></div>
+                    </div>
+                </div>
+
+                <!-- 发现的主机 -->
+                <div class="crack-progress">
+                    <h3><i class="fas fa-desktop"></i> 发现的主机</h3>
+                    <div class="target-list" id="discovered-hosts">
+                        <div class="target-item">
+                            <div class="target-ip">等待扫描...</div>
+                            <div class="target-status status-unknown">未知</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 端口扫描结果 -->
+                <div class="log-display">
+                    <h3><i class="fas fa-list-ul"></i> 端口扫描结果</h3>
+                    <div class="port-results" id="port-results">
+                        <div style="text-align: center; color: var(--text-muted); padding: 2rem;">
+                            选择一个主机开始端口扫描
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 扫描日志 -->
+                <div class="log-display">
+                    <h3><i class="fas fa-terminal"></i> 扫描日志</h3>
+                    <div class="log-content" id="scan-log">
+                        <div class="log-entry info">
+                            <span class="timestamp">[00:00:00]</span>
+                            <span class="message">网络扫描器已准备就绪</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 主机详情模态框 -->
+    <div id="host-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-server"></i> 主机详情</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="host-details">
+                    <div class="detail-section">
+                        <h4>基本信息</h4>
+                        <div class="detail-grid">
+                            <div><strong>IP地址:</strong> <span id="host-ip"></span></div>
+                            <div><strong>MAC地址:</strong> <span id="host-mac"></span></div>
+                            <div><strong>主机名:</strong> <span id="host-name"></span></div>
+                            <div><strong>系统类型:</strong> <span id="host-os"></span></div>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-section">
+                        <h4>开放端口</h4>
+                        <div id="host-ports"></div>
+                    </div>
+
+                    <div class="detail-section">
+                        <h4>服务信息</h4>
+                        <div id="host-services"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="scanHostPorts()">深度扫描</button>
+                <button class="btn btn-secondary" onclick="closeHostModal()">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/network-scan.js"></script>
+</body>
+</html>

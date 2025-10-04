@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQL注入演示 - CyberSec Academy</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/lab-style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .fake-browser {
+            background: var(--card-bg);
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .browser-header {
+            background: var(--darker-bg);
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .browser-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .browser-btn {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ff5f57;
+        }
+
+        .browser-btn:nth-child(2) {
+            background: #ffbd2e;
+        }
+
+        .browser-btn:nth-child(3) {
+            background: #28ca42;
+        }
+
+        .address-bar {
+            flex: 1;
+            background: var(--card-bg);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+
+        .fake-website {
+            padding: 2rem;
+            background: white;
+            color: #333;
+            min-height: 400px;
+            font-family: Arial, sans-serif;
+        }
+
+        .site-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #007bff;
+        }
+
+        .site-title {
+            color: #007bff;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .login-form {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 2rem;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background: #f8f9fa;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #555;
+            font-weight: bold;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 0.75rem;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .login-btn:hover {
+            background: #0056b3;
+        }
+
+        .result-box {
+            margin-top: 2rem;
+            padding: 1rem;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .result-success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+
+        .result-error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+
+        .database-view {
+            margin-top: 2rem;
+            background: var(--darker-bg);
+            border-radius: 10px;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .database-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            background: var(--card-bg);
+        }
+
+        .database-table th,
+        .database-table td {
+            border: 1px solid var(--border-color);
+            padding: 0.5rem;
+            text-align: left;
+            color: var(--text-primary);
+        }
+
+        .database-table th {
+            background: var(--primary-color);
+            color: var(--dark-bg);
+            font-weight: bold;
+        }
+
+        .sql-query-display {
+            background: var(--darker-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            padding: 1rem;
+            margin-top: 1rem;
+            font-family: 'Monaco', 'Consolas', monospace;
+            color: var(--primary-color);
+            font-size: 0.9rem;
+        }
+
+        .vulnerability-info {
+            background: rgba(255, 193, 7, 0.1);
+            border: 1px solid #ffc107;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .vulnerability-info h4 {
+            color: #ffc107;
+            margin-bottom: 1rem;
+        }
+
+        .payload-buttons {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+
+        .payload-btn {
+            padding: 0.3rem 0.8rem;
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .payload-btn:hover {
+            background: #e55a2b;
+        }
+
+        .demo-section {
+            margin-bottom: 3rem;
+        }
+
+        .demo-title {
+            color: var(--primary-color);
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .lessons-learned {
+            background: rgba(0, 255, 65, 0.1);
+            border: 1px solid var(--primary-color);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .lessons-learned h4 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .lessons-learned ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .lessons-learned li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+            color: var(--text-secondary);
+        }
+
+        .lessons-learned li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body class="lab-body">
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-shield-alt"></i>
+                <span>CyberSec Academy</span>
+            </div>
+            <div class="nav-right">
+                <button class="btn btn-secondary" onclick="goHome()">返回首页</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 实验室界面 -->
+    <div class="lab-container">
+        <div class="lab-header">
+            <h1><i class="fas fa-database"></i> SQL注入演示实验室</h1>
+            <p>在安全环境中学习SQL注入的原理、检测和防护</p>
+        </div>
+
+        <!-- 警告信息 -->
+        <div class="vulnerability-info">
+            <h4><i class="fas fa-exclamation-triangle"></i> 教育提醒</h4>
+            <p>本演示环境仅用于教育目的。所有操作都在模拟环境中进行，不会对真实系统造成任何影响。请勿在真实网站上尝试这些技术。</p>
+        </div>
+
+        <div class="lab-content">
+            <!-- 左侧控制面板 -->
+            <div class="control-panel">
+                <div class="panel-section">
+                    <h3><i class="fas fa-bug"></i> SQL注入攻击</h3>
+                    
+                    <div class="demo-section">
+                        <div class="demo-title">
+                            <i class="fas fa-play-circle"></i>
+                            快速测试
+                        </div>
+                        <div class="payload-buttons">
+                            <button class="payload-btn" onclick="tryPayload('admin\\'--')">绕过密码</button>
+                            <button class="payload-btn" onclick="tryPayload('\\' OR 1=1--')">万能密码</button>
+                            <button class="payload-btn" onclick="tryPayload('\\' UNION SELECT * FROM users--')">联合查询</button>
+                            <button class="payload-btn" onclick="tryPayload('\\'; DROP TABLE users;--')">删除表(模拟)</button>
+                        </div>
+                    </div>
+
+                    <div class="setting-group">
+                        <label>自定义注入测试:</label>
+                        <input type="text" id="custom-payload" class="key-input" placeholder="输入自定义SQL注入载荷...">
+                        <button class="btn btn-accent" onclick="tryCustomPayload()" style="margin-top: 0.5rem; width: 100%;">测试载荷</button>
+                    </div>
+
+                    <div class="setting-group" style="margin-top: 2rem;">
+                        <label>注入类型:</label>
+                        <select id="injection-type" class="key-input">
+                            <option value="login">登录绕过</option>
+                            <option value="union">联合查询注入</option>
+                            <option value="blind">盲注</option>
+                            <option value="error">报错注入</option>
+                        </select>
+                    </div>
+
+                    <button class="btn btn-primary" onclick="resetDemo()" style="width: 100%; margin-top: 1rem;">重置演示</button>
+                </div>
+
+                <div class="panel-section">
+                    <h3><i class="fas fa-shield-alt"></i> 防护措施</h3>
+                    
+                    <div class="lessons-learned">
+                        <h4>如何防止SQL注入</h4>
+                        <ul>
+                            <li>使用参数化查询/预编译语句</li>
+                            <li>输入验证和过滤</li>
+                            <li>最小权限原则</li>
+                            <li>使用Web应用防火墙(WAF)</li>
+                            <li>定期代码审计</li>
+                            <li>数据库账户分离</li>
+                        </ul>
+                    </div>
+
+                    <button class="btn btn-outline" onclick="showSecureCode()" style="width: 100%; margin-top: 1rem;">查看安全代码</button>
+                </div>
+            </div>
+
+            <!-- 右侧演示区域 -->
+            <div class="display-panel">
+                <!-- 虚假网站演示 -->
+                <div class="fake-browser">
+                    <div class="browser-header">
+                        <div class="browser-buttons">
+                            <div class="browser-btn"></div>
+                            <div class="browser-btn"></div>
+                            <div class="browser-btn"></div>
+                        </div>
+                        <div class="address-bar">https://vulnerable-demo.com/login</div>
+                    </div>
+                    
+                    <div class="fake-website">
+                        <div class="site-header">
+                            <h1 class="site-title">VulnBank 网上银行</h1>
+                            <p>模拟的存在漏洞的银行登录系统</p>
+                        </div>
+                        
+                        <form class="login-form" id="login-form">
+                            <h2 style="text-align: center; margin-bottom: 1.5rem; color: #333;">用户登录</h2>
+                            
+                            <div class="form-group">
+                                <label for="username">用户名:</label>
+                                <input type="text" id="username" name="username" placeholder="请输入用户名">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="password">密码:</label>
+                                <input type="password" id="password" name="password" placeholder="请输入密码">
+                            </div>
+                            
+                            <button type="button" class="login-btn" onclick="attemptLogin()">登录</button>
+                            
+                            <div class="result-box" id="result-box">
+                                <span id="result-message"></span>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- 后台数据库视图 -->
+                <div class="database-view">
+                    <h3><i class="fas fa-database"></i> 后台数据库状态</h3>
+                    
+                    <div class="sql-query-display" id="sql-query">
+                        SELECT * FROM users WHERE username='' AND password=''
+                    </div>
+
+                    <table class="database-table" id="database-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>用户名</th>
+                                <th>密码哈希</th>
+                                <th>角色</th>
+                                <th>余额</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>admin</td>
+                                <td>5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8</td>
+                                <td>管理员</td>
+                                <td>$50,000</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>john_doe</td>
+                                <td>ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f</td>
+                                <td>用户</td>
+                                <td>$2,500</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>jane_smith</td>
+                                <td>2c70e12b7a0646f92279f427c7b38e7334d8e5389cff167a1dc30e73f826b683</td>
+                                <td>用户</td>
+                                <td>$7,800</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- 日志显示 -->
+                <div class="log-display">
+                    <h3><i class="fas fa-list-alt"></i> 攻击日志</h3>
+                    <div class="log-content" id="attack-log">
+                        <div class="log-entry info">
+                            <span class="timestamp">[00:00:00]</span>
+                            <span class="message">SQL注入演示环境已就绪</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 安全代码示例模态框 -->
+    <div id="secure-code-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-code"></i> 安全编程示例</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <h4>不安全的代码 (存在SQL注入漏洞):</h4>
+                <pre style="background: var(--darker-bg); padding: 1rem; border-radius: 5px; overflow-x: auto;"><code style="color: #ff4757;">// PHP - 不安全的写法
+$username = $_POST['username'];
+$password = $_POST['password'];
+$query = "SELECT * FROM users WHERE username='$username' AND password='$password'";
+$result = mysqli_query($connection, $query);</code></pre>
+
+                <h4>安全的代码 (使用参数化查询):</h4>
+                <pre style="background: var(--darker-bg); padding: 1rem; border-radius: 5px; overflow-x: auto;"><code style="color: var(--primary-color);">// PHP - 安全的写法
+$username = $_POST['username'];
+$password = $_POST['password'];
+$stmt = $connection->prepare("SELECT * FROM users WHERE username=? AND password=?");
+$stmt->bind_param("ss", $username, $password);
+$stmt->execute();
+$result = $stmt->get_result();</code></pre>
+
+                <div class="lessons-learned" style="margin-top: 2rem;">
+                    <h4>关键差异</h4>
+                    <ul>
+                        <li>参数化查询将SQL代码和数据分离</li>
+                        <li>用户输入被当作数据而非SQL代码处理</li>
+                        <li>攻击者无法通过输入改变SQL语句结构</li>
+                        <li>自动处理特殊字符转义</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeSecureCodeModal()">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/sql-injection.js"></script>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>蓝队与SIEM入门 - CyberSec Academy</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/course.css" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="logo"><i class="fas fa-shield-alt"></i><span>CyberSec Academy</span></div>
+      <div class="nav-right">
+        <a class="btn btn-secondary" href="../index.html">返回首页</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="page-wrap">
+    <div class="breadcrumb"><span>课程</span> / <strong>蓝队与SIEM入门</strong></div>
+    <h1 class="page-title">蓝队与SIEM入门</h1>
+    <p class="page-subtitle">日志 → 指标 → 告警 → 响应 的基础实践</p>
+
+    <div class="course-layout">
+      <aside class="toc tilt">
+        <h4>课程目录</h4>
+        <a href="#s1">1. 数据来源与日志分类</a>
+        <a href="#s2">2. 规则与告警（示例）</a>
+        <a href="#s3">3. 事件响应流程</a>
+        <a href="#s4">4. 测验</a>
+      </aside>
+      <article class="article">
+        <section id="s1" class="section-card reveal tilt">
+          <h3>1. 数据来源与日志分类</h3>
+          <p>终端(EDR)、网络(NDR)、身份(IdP/SSO)、应用(Applog)、云审计(CloudTrail/Activity)与邮件/网关等。统一入湖，规范字段。</p>
+        </section>
+        <section id="s2" class="section-card reveal tilt">
+          <h3>2. 规则与告警（示例）</h3>
+          <div class="accordion">
+            <div class="accordion-item">
+              <button class="accordion-btn">示例：多地同时登录告警<i class="fas fa-chevron-down"></i></button>
+              <div class="accordion-panel"><p>在窗口期内同一账号出现相距过远的地理位置登录，触发可疑告警。</p></div>
+            </div>
+            <div class="accordion-item">
+              <button class="accordion-btn">示例：暴力破解趋势<i class="fas fa-chevron-down"></i></button>
+              <div class="accordion-panel"><p>同源IP对多个账号短期失败尝试达到阈值，触发阻断与验证码策略。</p></div>
+            </div>
+          </div>
+        </section>
+        <section id="s3" class="section-card reveal tilt">
+          <h3>3. 事件响应流程</h3>
+          <p>分级分流 → 初步研判 → 证据保存 → 深入分析 → 处置与恢复 → 复盘与改进。全程留痕与工单化。</p>
+        </section>
+        <section id="s4" class="section-card reveal quiz-card" data-quiz data-answer="c">
+          <h3>4. 测验</h3>
+          <div class="quiz-question">发现同一账号在 10 分钟内从相距 2000km 的两地登录，首要动作是？</div>
+          <div class="quiz-options">
+            <div class="quiz-option" data-value="a"><i class="far fa-circle"></i> 立即封禁所有用户</div>
+            <div class="quiz-option" data-value="b"><i class="far fa-circle"></i> 忽略，可能是CDN</div>
+            <div class="quiz-option" data-value="c"><i class="far fa-circle"></i> 升级告警并要求二次验证/强制改密，继续收集证据</div>
+          </div>
+        </section>
+      </article>
+    </div>
+  </main>
+  <script src="../js/main.js"></script>
+  <script src="../js/pages.js"></script>
+</body>
+</html>

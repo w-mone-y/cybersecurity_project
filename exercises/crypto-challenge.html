@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>加密解密挑战 - CyberSec Academy</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/lab-style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .crypto-playground {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .crypto-section {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .cipher-selector {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .cipher-btn {
+            padding: 0.5rem 1rem;
+            background: var(--darker-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 25px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+
+        .cipher-btn.active,
+        .cipher-btn:hover {
+            background: var(--primary-color);
+            color: var(--dark-bg);
+            border-color: var(--primary-color);
+        }
+
+        .crypto-textarea {
+            width: 100%;
+            min-height: 150px;
+            background: var(--darker-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1rem;
+            color: var(--text-primary);
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            resize: vertical;
+        }
+
+        .crypto-textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 10px rgba(0, 255, 65, 0.3);
+        }
+
+        .key-input {
+            width: 100%;
+            padding: 0.5rem 1rem;
+            background: var(--darker-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            color: var(--text-primary);
+            font-family: 'Monaco', 'Consolas', monospace;
+            margin-top: 1rem;
+        }
+
+        .challenge-card {
+            background: linear-gradient(135deg, rgba(0, 255, 65, 0.1), rgba(0, 128, 255, 0.1));
+            border: 1px solid var(--primary-color);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .challenge-title {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .challenge-description {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .challenge-cipher {
+            background: var(--darker-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1.5rem;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            letter-spacing: 1px;
+            word-break: break-all;
+            margin-bottom: 1.5rem;
+        }
+
+        .challenge-controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .hint-section {
+            background: rgba(255, 193, 7, 0.1);
+            border: 1px solid #ffc107;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .hint-section.show {
+            display: block;
+        }
+
+        .progress-indicators {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 2rem;
+        }
+
+        .progress-indicator {
+            text-align: center;
+            padding: 1rem;
+            background: var(--card-bg);
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            flex: 1;
+            margin: 0 0.5rem;
+        }
+
+        .progress-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            display: block;
+        }
+
+        .progress-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .visualization-area {
+            background: var(--darker-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+            min-height: 200px;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 0.9rem;
+        }
+
+        .cipher-demo {
+            display: none;
+        }
+
+        .cipher-demo.active {
+            display: block;
+        }
+
+        .alphabet-row {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .alphabet-char {
+            width: 30px;
+            height: 30px;
+            background: var(--primary-color);
+            color: var(--dark-bg);
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .shift-demo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .shift-arrow {
+            color: var(--accent-color);
+            font-size: 1.5rem;
+        }
+
+        .frequency-chart {
+            display: flex;
+            align-items: end;
+            gap: 2px;
+            height: 100px;
+            margin-top: 1rem;
+        }
+
+        .frequency-bar {
+            background: var(--primary-color);
+            min-width: 8px;
+            border-radius: 2px 2px 0 0;
+            position: relative;
+            transition: height 0.3s ease;
+        }
+
+        .frequency-label {
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        .leaderboard {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+            margin-top: 2rem;
+        }
+
+        .leaderboard-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .leaderboard-item:last-child {
+            border-bottom: none;
+        }
+
+        .leaderboard-rank {
+            color: var(--primary-color);
+            font-weight: bold;
+            margin-right: 1rem;
+        }
+
+        .leaderboard-name {
+            flex: 1;
+            color: var(--text-primary);
+        }
+
+        .leaderboard-score {
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body class="lab-body">
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-shield-alt"></i>
+                <span>CyberSec Academy</span>
+            </div>
+            <div class="nav-right">
+                <button class="btn btn-secondary" onclick="goHome()">返回首页</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 实验室界面 -->
+    <div class="lab-container">
+        <div class="lab-header">
+            <h1><i class="fas fa-lock"></i> 加密解密挑战赛</h1>
+            <p>掌握经典密码算法，成为密码学大师</p>
+        </div>
+
+        <!-- 进度指示器 -->
+        <div class="progress-indicators">
+            <div class="progress-indicator">
+                <span class="progress-number" id="challenges-solved">0</span>
+                <div class="progress-label">已破解挑战</div>
+            </div>
+            <div class="progress-indicator">
+                <span class="progress-number" id="total-score">0</span>
+                <div class="progress-label">总积分</div>
+            </div>
+            <div class="progress-indicator">
+                <span class="progress-number" id="current-streak">0</span>
+                <div class="progress-label">连续成功</div>
+            </div>
+            <div class="progress-indicator">
+                <span class="progress-number" id="hints-used">0</span>
+                <div class="progress-label">使用提示</div>
+            </div>
+        </div>
+
+        <div class="lab-content">
+            <!-- 挑战区域 -->
+            <div class="control-panel">
+                <div class="panel-section">
+                    <h3><i class="fas fa-puzzle-piece"></i> 当前挑战</h3>
+                    <div id="current-challenge">
+                        <div class="challenge-card">
+                            <div class="challenge-title" id="challenge-title">选择一个挑战开始</div>
+                            <div class="challenge-description" id="challenge-description">
+                                点击下方按钮开始你的密码学之旅！
+                            </div>
+                            <div class="challenge-cipher" id="challenge-cipher">
+                                等待挑战...
+                            </div>
+                            <div class="challenge-controls">
+                                <button class="btn btn-primary" onclick="loadRandomChallenge()">随机挑战</button>
+                                <button class="btn btn-secondary" onclick="loadSpecificChallenge('caesar')">凯撒密码</button>
+                                <button class="btn btn-secondary" onclick="loadSpecificChallenge('vigenere')">维吉尼亚密码</button>
+                                <button class="btn btn-secondary" onclick="loadSpecificChallenge('morse')">摩尔斯电码</button>
+                            </div>
+                        </div>
+                        
+                        <div class="setting-group">
+                            <label>你的答案:</label>
+                            <textarea class="crypto-textarea" id="answer-input" placeholder="在此输入你的答案..."></textarea>
+                            <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                                <button class="btn btn-primary" onclick="checkAnswer()">提交答案</button>
+                                <button class="btn btn-accent" onclick="showHint()">获得提示</button>
+                                <button class="btn btn-outline" onclick="skipChallenge()">跳过</button>
+                            </div>
+                        </div>
+
+                        <div class="hint-section" id="hint-section">
+                            <h4><i class="fas fa-lightbulb"></i> 提示</h4>
+                            <p id="hint-content">暂无提示</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel-section">
+                    <h3><i class="fas fa-trophy"></i> 排行榜</h3>
+                    <div class="leaderboard" id="leaderboard">
+                        <div class="leaderboard-item">
+                            <span class="leaderboard-rank">#1</span>
+                            <span class="leaderboard-name">密码专家</span>
+                            <span class="leaderboard-score">1500</span>
+                        </div>
+                        <div class="leaderboard-item">
+                            <span class="leaderboard-rank">#2</span>
+                            <span class="leaderboard-name">破解者</span>
+                            <span class="leaderboard-score">1200</span>
+                        </div>
+                        <div class="leaderboard-item">
+                            <span class="leaderboard-rank">#3</span>
+                            <span class="leaderboard-name">新手玩家</span>
+                            <span class="leaderboard-score">800</span>
+                        </div>
+                        <div class="leaderboard-item">
+                            <span class="leaderboard-rank">#4</span>
+                            <span class="leaderboard-name">你</span>
+                            <span class="leaderboard-score" id="player-score">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 工具和学习区域 -->
+            <div class="display-panel">
+                <!-- 加密工具 -->
+                <div class="target-info">
+                    <h3><i class="fas fa-tools"></i> 加密工具箱</h3>
+                    <div class="cipher-selector">
+                        <div class="cipher-btn active" data-cipher="caesar">凯撒密码</div>
+                        <div class="cipher-btn" data-cipher="vigenere">维吉尼亚密码</div>
+                        <div class="cipher-btn" data-cipher="atbash">阿特巴什密码</div>
+                        <div class="cipher-btn" data-cipher="morse">摩尔斯电码</div>
+                        <div class="cipher-btn" data-cipher="base64">Base64</div>
+                        <div class="cipher-btn" data-cipher="rot13">ROT13</div>
+                    </div>
+                    
+                    <div class="crypto-playground">
+                        <div class="crypto-section">
+                            <h4>加密</h4>
+                            <textarea class="crypto-textarea" id="encrypt-input" placeholder="输入要加密的文本..."></textarea>
+                            <input type="text" class="key-input" id="encrypt-key" placeholder="密钥 (如果需要)" style="display: none;">
+                            <button class="btn btn-primary" onclick="encryptText()" style="margin-top: 1rem; width: 100%;">加密</button>
+                        </div>
+                        
+                        <div class="crypto-section">
+                            <h4>解密</h4>
+                            <textarea class="crypto-textarea" id="decrypt-input" placeholder="输入要解密的文本..."></textarea>
+                            <input type="text" class="key-input" id="decrypt-key" placeholder="密钥 (如果需要)" style="display: none;">
+                            <button class="btn btn-accent" onclick="decryptText()" style="margin-top: 1rem; width: 100%;">解密</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 可视化演示 -->
+                <div class="log-display">
+                    <h3><i class="fas fa-eye"></i> 算法可视化</h3>
+                    <div class="visualization-area" id="visualization-area">
+                        <!-- 凯撒密码演示 -->
+                        <div class="cipher-demo active" id="caesar-demo">
+                            <h4>凯撒密码 (Caesar Cipher)</h4>
+                            <p>每个字母向后移动固定位数</p>
+                            <div class="shift-demo">
+                                <div class="alphabet-row">
+                                    <div class="alphabet-char">A</div>
+                                    <div class="alphabet-char">B</div>
+                                    <div class="alphabet-char">C</div>
+                                    <div style="color: var(--text-muted);">...</div>
+                                </div>
+                                <div class="shift-arrow">→</div>
+                                <div class="alphabet-row">
+                                    <div class="alphabet-char">D</div>
+                                    <div class="alphabet-char">E</div>
+                                    <div class="alphabet-char">F</div>
+                                    <div style="color: var(--text-muted);">...</div>
+                                </div>
+                            </div>
+                            <p style="color: var(--text-secondary); font-size: 0.9rem;">示例：HELLO → KHOOR (移位3)</p>
+                        </div>
+
+                        <!-- 维吉尼亚密码演示 -->
+                        <div class="cipher-demo" id="vigenere-demo">
+                            <h4>维吉尼亚密码 (Vigenère Cipher)</h4>
+                            <p>使用关键词进行多表替换</p>
+                            <div style="margin: 1rem 0; font-family: monospace;">
+                                <div>明文:　HELLO WORLD</div>
+                                <div>密钥:　KEY KEY KEY</div>
+                                <div style="border-top: 1px solid var(--border-color); padding-top: 0.5rem;">
+                                <div>密文:　RIJVS UYVJN</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 摩尔斯电码演示 -->
+                        <div class="cipher-demo" id="morse-demo">
+                            <h4>摩尔斯电码 (Morse Code)</h4>
+                            <p>用点和划表示字母</p>
+                            <div style="margin: 1rem 0;">
+                                <div>A: .-　　B: -...　　C: -.-.</div>
+                                <div>D: -..　　E: .　　　F: ..-.</div>
+                                <div>G: --.　　H: ....　　I: ..</div>
+                            </div>
+                        </div>
+
+                        <!-- 其他密码演示 -->
+                        <div class="cipher-demo" id="atbash-demo">
+                            <h4>阿特巴什密码 (Atbash Cipher)</h4>
+                            <p>字母表的反向替换</p>
+                            <div class="alphabet-row" style="margin: 1rem 0;">
+                                <div style="font-family: monospace;">A↔Z　B↔Y　C↔X　D↔W　E↔V</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 频率分析 -->
+                <div class="log-display">
+                    <h3><i class="fas fa-chart-bar"></i> 频率分析</h3>
+                    <div style="margin-bottom: 1rem;">
+                        <button class="btn btn-outline" onclick="analyzeFrequency()" style="width: 100%;">分析当前文本频率</button>
+                    </div>
+                    <div class="frequency-chart" id="frequency-chart">
+                        <div style="text-align: center; color: var(--text-muted); padding: 2rem;">
+                            输入文本进行频率分析
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/crypto-challenge.js"></script>
+</body>
+</html>
